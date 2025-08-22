@@ -346,6 +346,41 @@
   from { opacity: 0.6; transform: scale(1); }
   to { opacity: 1; transform: scale(1.05); }
 }
+  /* Toast Message */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #333;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 10000;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+.confetti {
+  position: fixed;
+  top: 0;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation: fallConfetti linear forwards;
+}
+
+@keyframes fallConfetti {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
 
 /* Keep content above effects */
 header, .container { position: relative; z-index: 1; }
@@ -646,6 +681,57 @@ header, .container { position: relative; z-index: 1; }
         setTimeout(() => sparkle.remove(), 1000);
       }
     });
+   // 🎉 Confetti Celebration
+    function launchConfetti() {
+      for (let i = 0; i < 80; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        document.body.appendChild(conf);
+
+        conf.style.left = Math.random() * window.innerWidth + "px";
+        conf.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        conf.style.width = (6 + Math.random() * 6) + "px";
+        conf.style.height = (8 + Math.random() * 8) + "px";
+        conf.style.animationDuration = (2 + Math.random() * 3) + "s";
+
+        setTimeout(() => conf.remove(), 5000);
+      }
+    }
+
+    // 🎯 Toast Message
+    function showToast(msg) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+
+      // show
+      setTimeout(() => toast.classList.add("show"), 100);
+
+      // hide after 4s
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+    }
+
+    // 🎯 Trigger once when Awards section is visible
+    const awardsSection = document.getElementById("awards");
+    let confettiLaunched = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !confettiLaunched) {
+          launchConfetti();
+          showToast("🎉 Welcome to Awards & Achievements!");
+          confettiLaunched = true;
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    observer.observe(awardsSection);
+
   </script>
 </body>
 </html>
