@@ -3,7 +3,7 @@
 Welcome to my personal portfolio! 🚀  
 This site showcases my **career journey, technical expertise, and professional projects**, built straight from my resume with an attractive UI/UX using HTML, CSS, and a bit of JavaScript.
 
-🌐 Live Portfolio: [GitHub Pages Link](https://<your-username>.github.io/<repo-name>/)
+🌐 Live Portfolio: [GitHub Pages Link]([https://<your-username>.github.io/<repo-name>/](https://balbirsingh08.github.io/balbir-singh-portfolio/))
 
 ---
 
