@@ -333,6 +333,19 @@
   from { opacity: 0.2; transform: rotate(-35deg) translate(-30px, -15px); }
   to   { opacity: 0.8; transform: rotate(-35deg) translate(-80px, 40px); }
 }
+.theme-hint {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--accent);
+  animation: blink 2s infinite alternate;
+}
+
+@keyframes blink {
+  from { opacity: 0.6; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.05); }
+}
 
 /* Keep content above effects */
 header, .container { position: relative; z-index: 1; }
@@ -359,6 +372,10 @@ header, .container { position: relative; z-index: 1; }
 
   <main class="container">
     <!-- HERO -->
+     <!-- Fun Theme Hint -->
+    <div class="theme-hint">
+      <p>✨ Try changing the theme, it will be fun 😉</p>
+    </div>
     <section class="hero">
       <div class="card reveal">
         <h2 class="title">Full-Stack Developer<br/><span style="background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent">Angular • FastAPI • Docker • AWS</span></h2>
