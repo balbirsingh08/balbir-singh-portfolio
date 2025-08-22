@@ -68,6 +68,17 @@
       --chip-bg: rgba(14,165,233,0.15);
     }
 
+    [data-theme="matrix"] {
+  --bg: #000;
+  --card: rgba(0, 30, 0, 0.8);
+  --card-stroke: rgba(0, 255, 0, 0.3);
+  --text: #0f0;
+  --muted: #0a0;
+  --accent: #0f0;
+  --accent-2: #0a0;
+  --chip-bg: rgba(0, 255, 0, 0.15);
+}
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -648,7 +659,7 @@ header, .container { position: relative; z-index: 1; }
 
     // Theme toggle
     const toggle = document.getElementById('themeToggle');
-    const modes = ["rainy", "day", "spring", "winter"];
+    const modes = ["rainy", "day", "spring", "winter" ,"matrix"];
     let modeIndex = 0;
 
     const saved = localStorage.getItem("theme");
@@ -726,6 +737,57 @@ header, .container { position: relative; z-index: 1; }
 
         document.body.appendChild(sunlight);
       }
+      if(theme === "matrix"){
+    // Create canvas overlay
+    const canvas = document.createElement("canvas");
+    canvas.className = "matrix-overlay";
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.zIndex = "0";
+    canvas.style.pointerEvents = "none";
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "01";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0,0,0,0.08)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#0F0";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    let interval = setInterval(drawMatrix, 40);
+    
+    // Store interval ID on canvas for cleanup
+    canvas.dataset.intervalId = interval;
+  }
+  
+  // Clean up matrix interval if not in matrix mode
+  if(theme !== "matrix"){
+    document.querySelectorAll(".matrix-overlay").forEach(c => {
+      clearInterval(Number(c.dataset.intervalId));
+      c.remove();
+    });
+  }
 
     }
 
