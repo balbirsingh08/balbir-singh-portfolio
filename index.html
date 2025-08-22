@@ -15,28 +15,57 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    :root{
+/* Default (Rainy Mode) */
+    :root {
+      --bg: #0a0f1a;
+      --card: rgba(255, 255, 255, 0.06);
+      --card-stroke: rgba(255, 255, 255, 0.15);
+      --text: #e9eef7;
+      --muted: #a9b3c7;
+      --accent: #00bfff;
+      --accent-2: #0077ff;
+      --chip-bg: rgba(0,191,255,0.15);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    /* Day */
+    [data-theme="day"] {
+      --bg: #fdfdfd;
+      --text: #111;
+      --muted: #444;
+      --accent: #f39c12;
+      --accent-2: #f1c40f;
+      --chip-bg: rgba(243,156,18,0.15);
+    }
+    
+    /* Night */
+    [data-theme="night"] {
       --bg: #0b0f17;
-      --card: rgba(255,255,255,0.06);
-      --card-stroke: rgba(255,255,255,0.15);
       --text: #e9eef7;
       --muted: #a9b3c7;
       --accent: #7c5cff;
       --accent-2: #00e5ff;
       --chip-bg: rgba(124,92,255,0.15);
-      --ok: #22c55e;
-      --warn: #f59e0b;
-      --shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 0 0 1px var(--card-stroke);
-      --radius-xl: 22px;
     }
-    [data-theme="light"]{
-      --bg: #f7f9fc;
-      --card: rgba(255,255,255,0.8);
-      --card-stroke: rgba(16,24,40,0.08);
-      --text: #111827;
-      --muted: #4b5563;
-      --chip-bg: rgba(124,92,255,0.12);
-      --shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 0 0 1px var(--card-stroke);
+
+    /* Spring */
+    [data-theme="spring"] {
+      --bg: #f0fff4;
+      --text: #064e3b;
+      --muted: #047857;
+      --accent: #10b981;
+      --accent-2: #34d399;
+      --chip-bg: rgba(16,185,129,0.15);
+    }
+
+    /* Winter */
+    [data-theme="winter"] {
+      --bg: #f0f9ff;
+      --text: #0c4a6e;
+      --muted: #0369a1;
+      --accent: #38bdf8;
+      --accent-2: #0ea5e9;
+      --chip-bg: rgba(14,165,233,0.15);
     }
 
     *{box-sizing:border-box}
@@ -202,6 +231,112 @@
       body{background:white}
       .card{box-shadow:none; background:white; border:1px solid #ddd}
     }
+  /* Sparkle effect */
+    .sparkle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle, #fff, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkleAnim 1s ease-out forwards;
+    }
+
+    @keyframes sparkleAnim {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(3);
+      }
+    }
+   /* Rain drops */
+/* === Weather effects (for classes you create in JS) === */
+.rain{
+  position: fixed;
+  top: -12vh;
+  width: 2px;
+  height: 14vh;
+  background: linear-gradient(to bottom, rgba(255,255,255,.8), rgba(255,255,255,0));
+  filter: blur(.5px);
+  animation: rainfall 0.9s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes rainfall{
+  to { transform: translateY(120vh); opacity: .25; }
+}
+
+.snow{
+  position: fixed;
+  top: -8vh;
+  color: #fff;
+  text-shadow: 0 0 6px rgba(255,255,255,.6);
+  animation: snowfall linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes snowfall{
+  to { transform: translate3d(12vw, 115vh, 0) rotate(360deg); opacity: .8; }
+}
+
+.leaf{
+  position: fixed;
+  left: -4vw;         /* start just off-screen on the left  */
+  animation: leafFloat linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes leafFloat{
+  to { transform: translate3d(108vw, 22vh, 0) rotate(540deg); opacity: .9; }
+}
+/* 🌞 Sunlight effect */
+.sunlight {
+  position: fixed;
+  top: 75px; /* push below header */
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0; /* keep behind content */
+  overflow: hidden;
+}
+
+.sunlight .sun {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffdd0, #ffd27f);
+  position: absolute;
+  top: 2%;
+  right: 3%;
+  box-shadow: 0 0 80px rgba(255, 230, 150, 0.9);
+  mix-blend-mode: screen;
+}
+
+/* Sun rays diagonal top-right → bottom-left */
+.sunlight .ray {
+  position: absolute;
+  width: 300px;
+  height: 3px;
+  background: linear-gradient(to left, rgba(255,255,200,0.6), transparent);
+  top: 5%;
+  right: 5%;
+  transform-origin: top right;
+  opacity: 0.4;
+  animation: raySweep 5s ease-in-out infinite alternate;
+}
+
+@keyframes raySweep {
+  from { opacity: 0.2; transform: rotate(-35deg) translate(-30px, -15px); }
+  to   { opacity: 0.8; transform: rotate(-35deg) translate(-80px, 40px); }
+}
+
+/* Keep content above effects */
+header, .container { position: relative; z-index: 1; }
+
   </style>
 </head>
 <body>
@@ -384,26 +519,115 @@
       © <span id="year"></span> Balbir Singh • Built with vanilla HTML/CSS/JS • <a href="#top">Back to top</a>
     </footer>
   </main>
-
   <script>
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Theme toggle (persist)
-    const root = document.documentElement;
+    // Theme toggle
     const toggle = document.getElementById('themeToggle');
-    const saved = localStorage.getItem('theme');
-    if(saved){ document.documentElement.setAttribute('data-theme', saved); }
-    toggle.addEventListener('click', () => {
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const next = isLight ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+    const modes = ["rainy", "day", "spring", "winter"];
+    let modeIndex = 0;
+
+    const saved = localStorage.getItem("theme");
+    if (saved && modes.includes(saved)) {
+      document.documentElement.setAttribute("data-theme", saved);
+      modeIndex = modes.indexOf(saved);
+    } else {
+      document.documentElement.setAttribute("data-theme", "rainy"); // default
+      modeIndex = 0;
+    }
+
+    toggle.addEventListener("click", () => {
+      modeIndex = (modeIndex + 1) % modes.length;
+      const next = modes[modeIndex];
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      handleEffects(next);
     });
 
-    // Reveal on load (already staggered via CSS)
-    document.querySelectorAll('.reveal').forEach((el,i)=>{
-      // No JS needed; CSS handles delays. Keep for future intersection observers.
+    // Weather effects
+    function handleEffects(theme){
+      document.querySelectorAll(".rain, .snow, .leaf, .sunlight").forEach(el=>el.remove());
+
+      if(theme === "rainy"){
+        for(let i=0; i<80; i++){
+          const drop = document.createElement("div");
+          drop.className = "rain";
+          drop.style.left = Math.random() * window.innerWidth + "px";
+          drop.style.animationDuration = (0.5 + Math.random()*0.9) + "s";
+          document.body.appendChild(drop);
+        }
+      }
+
+      if(theme === "winter"){
+        for(let i=0; i<50; i++){
+          const snow = document.createElement("div");
+          snow.className = "snow";
+          snow.style.left = Math.random() * window.innerWidth + "px";
+          snow.style.fontSize = (10 + Math.random() * 10) + "px";
+          snow.textContent = "❄";
+          snow.style.animationDuration = (3 + Math.random()*3) + "s";
+          document.body.appendChild(snow);
+        }
+      }
+
+      if(theme === "spring"){
+        for(let i=0; i<30; i++){
+          const leaf = document.createElement("div");
+          leaf.className = "leaf";
+          leaf.textContent = "🍂";
+          leaf.style.top = Math.random() * window.innerHeight + "px";
+          leaf.style.fontSize = (12 + Math.random() * 14) + "px";
+          leaf.style.animationDuration = (4 + Math.random()*3) + "s";
+          document.body.appendChild(leaf);
+        }
+      }
+
+      if(theme === "day"){
+        const sunlight = document.createElement("div");
+        sunlight.className = "sunlight";
+
+        // add sun
+        const sun = document.createElement("div");
+        sun.className = "sun";
+        sunlight.appendChild(sun);
+
+        // add 20+ rays
+        for(let i=0; i<22; i++){
+          const ray = document.createElement("div");
+          ray.className = "ray";
+          ray.style.transform = `rotate(-35deg) translate(-${i*40}px, ${i*20}px)`;
+          ray.style.animationDuration = (4 + Math.random()*3) + "s";
+          sunlight.appendChild(ray);
+        }
+
+        document.body.appendChild(sunlight);
+      }
+
+    }
+
+    // Init
+    handleEffects(document.documentElement.getAttribute("data-theme"));
+
+    // Sparkle on click
+    document.addEventListener("click", function(e) {
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        document.body.appendChild(sparkle);
+
+        const angle = Math.random() * 2 * Math.PI;
+        const radius = Math.random() * 60;
+        const x = e.pageX + Math.cos(angle) * radius;
+        const y = e.pageY + Math.sin(angle) * radius;
+
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        sparkle.style.position = "absolute";
+        sparkle.style.background = `radial-gradient(circle, hsl(${Math.random()*360}, 100%, 70%), transparent)`;
+
+        setTimeout(() => sparkle.remove(), 1000);
+      }
     });
   </script>
 </body>
