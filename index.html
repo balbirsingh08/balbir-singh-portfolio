@@ -381,7 +381,68 @@
     opacity: 0;
   }
 }
+  .welcome-popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 9999;
+  }
+  .welcome-popup.show {
+    opacity: 1;
+  }
+.contact-fab {
+  position: fixed; inset: auto 20px 20px auto;
+  z-index: 2000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+  pointer-events: none; /* lets clicks pass when closed */
+}
+.contact-fab * { box-sizing: border-box; font-family: inherit; }
 
+.contact-btn {
+  pointer-events: auto;
+  background: linear-gradient(135deg, #f39c12, #f1c40f);
+  color: #fff; font-weight: 800; border: 0; border-radius: 999px;
+  padding: 12px 18px; box-shadow: var(--cf-shadow); cursor: pointer;
+  transition: transform .15s ease;
+}
+.contact-btn:hover { transform: translateY(-1px); }
+
+.contact-menu {
+  display: grid; gap: 10px; margin-bottom: 10px;
+  opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.contact-menu.open {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+.contact-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;
+  padding: 10px 14px; border-radius: 10px; box-shadow: var(--cf-shadow);
+  transition: transform .15s ease, opacity .15s ease;
+}
+.contact-item:hover { transform: translateY(-1px); }
+
+/* brand colors for contrast on any bg */
+.contact-item.email { background:#e74c3c; }
+.contact-item.linkedin { background:#0077b5; }
+.contact-item.github { background:#24292e; }
+.contact-item.whatsapp { background:#25d366; }
+
+/* small screens: keep in the corner */
+@media (max-width: 520px){
+  .contact-btn { padding: 10px 14px; font-size: 14px; }
+  .contact-item { font-size: 13px; padding: 9px 12px; }
+}
 /* Keep content above effects */
 header, .container { position: relative; z-index: 1; }
 
@@ -410,6 +471,9 @@ header, .container { position: relative; z-index: 1; }
      <!-- Fun Theme Hint -->
     <div class="theme-hint">
       <p>✨ Try changing the theme, it will be fun 😉</p>
+    </div>
+    <div id="welcomePopup" class="welcome-popup">
+  👋 Welcome! Explore Balbir’s journey.
     </div>
     <section class="hero">
       <div class="card reveal">
@@ -456,7 +520,7 @@ header, .container { position: relative; z-index: 1; }
           <span class="skill">Angular</span>
           <span class="skill">TypeScript</span>
           <span class="skill">JavaScript</span>
-          <span class="skill">React (Basic)</span>
+          <span class="skill">Reactjs</span>
           <span class="skill">HTML</span>
           <span class="skill">CSS</span>
           <span class="skill">FastAPI</span>
@@ -472,6 +536,7 @@ header, .container { position: relative; z-index: 1; }
           <span class="skill">Azure DevOps</span>
           <span class="skill">AWS</span>
           <span class="skill">OOP • DS • RDBMS</span>
+          <span class="skill">Terraform</span>
         </div>
       </div>
     </section>
@@ -566,6 +631,12 @@ header, .container { position: relative; z-index: 1; }
         </ul>
       </div>
     </section>
+    <!-- Floating Contact Button -->
+      
+        <a href="mailto:singh321balveer@gmail.com">✉️ Email</a>
+        <a href="https://linkedin.com/in/balbir-singh-52446a191" target="_blank">🔗 LinkedIn</a>
+        <a href="https://github.com/balbirsingh08" target="_blank">💻 GitHub</a>
+        <a href="https://wa.me/917611843103" target="_blank">💬 WhatsApp</a>
 
     <footer>
       © <span id="year"></span> Balbir Singh • Built with vanilla HTML/CSS/JS • <a href="#top">Back to top</a>
@@ -731,6 +802,53 @@ header, .container { position: relative; z-index: 1; }
     }, { threshold: 0.5 });
 
     observer.observe(awardsSection);
+    // === Welcome Popup ===
+  window.addEventListener("load", () => {
+    const popup = document.getElementById("welcomePopup");
+    popup.classList.add("show");
+    setTimeout(() => popup.classList.remove("show"), 3000);
+  });
+(function(){
+  // Build once and append to <body> so it can't be clipped by containers
+  const wrap = document.createElement('div');
+  wrap.className = 'contact-fab';
+  wrap.innerHTML = `
+    <div class="contact-menu" id="cfMenu" aria-hidden="true">
+      <a class="contact-item email" href="mailto:singh321balveer@gmail.com">✉️ Email</a>
+      <a class="contact-item linkedin" href="https://linkedin.com/in/balbir-singh-52446a191" target="_blank" rel="noopener">🔗 LinkedIn</a>
+      <a class="contact-item github" href="https://github.com/balbirsingh08" target="_blank" rel="noopener">💻 GitHub</a>
+      <a class="contact-item whatsapp" href="https://wa.me/917611843103" target="_blank" rel="noopener">💬 WhatsApp</a>
+    </div>
+    <button class="contact-btn" id="cfToggle" aria-expanded="false" aria-controls="cfMenu">📧 Hire Me</button>
+  `;
+  document.body.appendChild(wrap);
+
+  const menu = wrap.querySelector('#cfMenu');
+  const btn  = wrap.querySelector('#cfToggle');
+
+  function setOpen(open){
+    menu.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+    menu.setAttribute('aria-hidden', !open);
+  }
+  setOpen(false); // closed by default
+
+  // Toggle
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    setOpen(!menu.classList.contains('open'));
+  });
+
+  // Click outside closes
+  document.addEventListener('click', (e)=>{
+    if (menu.classList.contains('open') && !wrap.contains(e.target)) setOpen(false);
+  });
+
+  // ESC closes
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape') setOpen(false);
+  });
+})();
 
   </script>
 </body>
